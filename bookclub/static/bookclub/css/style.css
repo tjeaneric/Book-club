@@ -1,0 +1,18 @@
+body {
+    padding-bottom: 50px;
+    background-color: whitesmoke;
+}
+
+.card.mb-3:nth-child(even) {
+    margin-left: 20px
+}
+
+.card-img {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+form {
+    margin-bottom: 50px;
+}

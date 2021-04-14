@@ -1,0 +1,72 @@
+<!--bookclub/templates/bookclub/book_detail.html-->
+
+{% extends 'bookclub/base.html' %}
+
+{% block title %}
+{{ book.book }}
+{% endblock %}}
+
+{% block content %}
+
+
+<div class="card">
+    <div class="card-body">
+        {{ book.description|safe}}
+
+        {% if not discussion_open %}
+        <div class="alert alert-primary mt-4" role="alert">
+            Read this book by: {{book.read_by}}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if discussion_open %}
+{% load crispy_forms_tags %}
+
+<b>What are your thoughts on the book?</b>
+{% if user.is_authenticated %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ discussion_form.media }}
+    {{ discussion_form|crispy }}
+    <br>
+    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+</form>
+<div class="container">
+  <div class="row">
+    {% for opinion in book.discussion.all %}
+        <div class="card mb-3" style="width: 500px;">
+          <div class="row no-gutters">
+              <div class="col-md-4">
+                  {% if opinion.image %}
+                      <img src="{{ opinion.image.url }}" class="card-img">
+                  {% else %}
+                      <img src="http://www.jennybeaumont.com/wp-content/uploads/2015/03/placeholder.gif" class="card-img">
+                  {% endif %}
+              </div>
+              <div class="col-md-8">
+                  <div class="card-body">
+                      <h5 class="card-title">{{ opinion.author }}</h5>
+                      <p class="card-text">{{ opinion.opinion|safe }}</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+  {% empty %}
+      <div class="alert alert-secondary mt-4" role="alert">
+          There is no opinions yet for this book.
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+    </div>
+{% else %}
+<div class="alert alert-warning">Only registered users are allowed to post their opinion.</div>
+{% endif %}
+{% else %}
+<p class="alert"> Discussion is not enabled yet for this book.</p>
+{% endif %}
+
+<a href="{% url 'all_books'%}" class="float-right">Back to all books</a>
+{% endblock %}
